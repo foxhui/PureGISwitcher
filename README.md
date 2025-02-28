@@ -21,6 +21,9 @@
 - 选择游戏目录和游戏入口（如果需要搭配解帧工具使用，游戏入口则选择解帧工具）
 - Enjoy(:
 
+## 截图
+![Screenshot](https://raw.github.com/foxhui/PureGISwitcher/master/screenshot.png)
+
 ## 声明
 ### 文件来源
 `PCGameSDK.dll`提取自B服游戏包的`YuanShen_Data/Plugins`文件夹
