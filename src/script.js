@@ -35,50 +35,56 @@ document.getElementById('saveFile').addEventListener('click', function (event) {
 });
 
 // 切换至官服
-document.getElementById('2mi').addEventListener('click', function (event) {
+document.getElementById('2mi').addEventListener('click', async function (event) {
     event.preventDefault();
-    var folder = document.getElementById('folder').value;
-    var file = document.getElementById('file').value;
-    if (folder && file) {
-        modifyINI(`${folder}/config.ini`, "1", "mihoyo")
-            .then(() => {
-                Niva.api.fs.remove(`${folder}/YuanShen_Data/Plugins/PCGameSDK.dll`)
-                    .then(() => {
-                        Niva.api.process.open(document.getElementById('file').value)
-                            .then(() => {
-                                Niva.api.process.exit();
-                            });
-                    })
-                    .catch((error) => {
-                        showError("删除SDK文件时出错:" + error);
-                    });
-            });
-    } else {
-        showError("请先选择游戏目录和游戏入口！");
+    const button = this;
+    button.disabled = true;
+    try {
+        const folder = document.getElementById('folder').value;
+        const file = document.getElementById('file').value;
+        if (!folder || !file) {
+            showError("请先选择游戏目录和游戏入口！");
+            return;
+        }
+        await modifyINI(`${folder}/config.ini`, "1", "mihoyo");
+        await Niva.api.fs.remove(`${folder}/YuanShen_Data/Plugins/PCGameSDK.dll`);
+        await Niva.api.fs.remove(`${folder}/YuanShen_Data/Plugins/BLPlatform64`);
+        await Niva.api.process.open(file);
+        Niva.api.process.exit();
+
+    } catch (error) {
+        showError("操作过程中出错: " + error);
+    } finally {
+        button.disabled = false;
     }
 });
 
 // 切换至B服
-document.getElementById('2bl').addEventListener('click', function (event) {
+document.getElementById('2bl').addEventListener('click', async function (event) {
     event.preventDefault();
-    var folder = document.getElementById('folder').value;
-    var file = document.getElementById('file').value;
-    if (folder && file) {
-        modifyINI(`${folder}/config.ini`, "14", "bilibili")
-            .then(() => {
-                Niva.api.resource.extract("lib/PCGameSDK.dll", `${folder}/YuanShen_Data/Plugins/PCGameSDK.dll`)
-                    .then(() => {
-                        Niva.api.process.open(document.getElementById('file').value)
-                            .then(() => {
-                                Niva.api.process.exit();
-                            });
-                    })
-                    .catch((error) => {
-                        showError("提取SDK文件时出错:" + error);
-                    });
-            });
-    } else {
-        showError("请先选择游戏目录和游戏入口！");
+    const button = this;
+    button.disabled = true;
+    try {
+        const folder = document.getElementById('folder').value;
+        const file = document.getElementById('file').value;
+        const workDir = document.getElementById('workDir').value;
+
+        if (!folder || !file) {
+            showError("请先选择游戏目录和游戏入口！");
+            return;
+        }
+        await modifyINI(`${folder}/config.ini`, "14", "bilibili");
+        //await Niva.api.resource.extract("lib/PCGameSDK.dll", `${folder}/YuanShen_Data/Plugins/PCGameSDK.dll`);
+        await Niva.api.fs.copy(`${workDir}/PureGISwitcher/PCGameSDK.dll`, `${folder}/YuanShen_Data/Plugins/PCGameSDK.dll`, { skipExist: true });
+        await Niva.api.fs.copy(`${workDir}/PureGISwitcher/BLPlatform64`, `${folder}/YuanShen_Data/Plugins`, { skipExist: true });
+        await Niva.api.process.open(file);
+        Niva.api.process.exit();
+
+    } catch (error) {
+        showError("操作过程中出错: " + error);
+        
+    } finally {
+        button.disabled = false;
     }
 });
 
@@ -113,6 +119,7 @@ function readConfig() {
 
                             document.getElementById('folder').value = folder;
                             document.getElementById('file').value = file;
+                            document.getElementById('workDir').value = folderPath;
                         } catch (error) {
                             showError("读取或检查配置文件时出错:" + error);
                         }
