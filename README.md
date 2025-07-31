@@ -28,7 +28,7 @@
 
 ## 声明
 ### 文件来源
-`PCGameSDK.dll`提取自B服游戏包的`YuanShen_Data/Plugins`文件夹
+`Plugins_xx.zip`提取自B服游戏包的`YuanShen_Data/Plugins`文件夹
 
 ### 免责声明
-本工具原理很简单，只是简单修改`config.ini`和添加或删除`PCGameSDK.dll`，并没有对游戏进行注入修改，若您非常顾虑是否使用，请立即停止使用，使用后的后果自负，工具和工具作者不承担任何责任
+本工具原理很简单，只是简单修改`config.ini`和添加或删除`PCGameSDK.dll`文件以及`BLPlatform64`文件夹，并没有对游戏进行注入修改，若您非常顾虑是否使用，请立即停止使用，使用后的后果自负，工具和工具作者不承担任何责任
